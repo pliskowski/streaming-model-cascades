@@ -1,0 +1,78 @@
+[project]
+name = "icefall"
+version = "0.1.0"
+description = "Artifact code for Streaming Model Cascades for Semantic SQL (VLDB 2027)"
+requires-python = ">=3.11,<3.13"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Snowflake Inc." }]
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "scikit-learn>=1.3",
+  "scipy>=1.11",
+  "matplotlib>=3.8",
+  "pygam>=0.9",
+  "loguru>=0.7",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+  "pytest-xdist",
+  "ruff>=0.6",
+  "mypy>=1.11",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/icefall"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
+ignore = [
+  "E402",   # harness configures loguru before icefall imports
+  "E501",   # long lines in numerical code
+  "E731",   # Lambda assignment (used in scipy optimize callbacks)
+  "E741",   # Ambiguous variable name (l, I, O common in math code)
+  "B007",   # unused loop control variable
+  "B008",   # function call in default argument
+  "B023",   # loop variable binding false positives
+  "B904",   # raise ... from err
+  "B905",   # zip without strict=
+  "SIM102", # collapsible if
+  "SIM108", # ternary operator
+  "SIM117", # nested with
+  "UP007",  # X | Y unions in dataclasses
+  "UP035",  # typing.Dict etc.
+  "UP045",  # Optional[X]
+  "RUF001", # Greek math symbols in strings
+  "RUF002", # Greek math symbols in docstrings
+  "RUF003", # Greek math symbols in comments
+  "RUF005", # collection literal concatenation
+  "RUF007", # zip vs pairwise
+  "RUF012", # mutable class attributes
+  "RUF013", # implicit Optional
+  "RUF034", # if-else clarity
+  "RUF059", # unused unpacked variable
+]
+
+[tool.ruff.lint.per-file-ignores]
+"src/icefall/harness.py" = ["I001"]  # loguru must be configured before icefall imports
+"tests/**" = ["F841"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+markers = [
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
+addopts = "-ra"
