@@ -404,9 +404,7 @@ def generate_fixed_budget_table(
     return grouped
 
 
-def _find_best_in_budget_column(
-    results: dict, ds: str, budget: float, algos: list
-) -> float:
+def _find_best_in_budget_column(results: dict, ds: str, budget: float, algos: list) -> float:
     """Best F1 among algorithms for one dataset and budget column."""
     vals = [results.get((ds, budget, a)) for a in algos]
     vals = [v for v in vals if v is not None]
